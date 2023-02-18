@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { validateTablePaginationProps } from "$lib/services/validate.service";
   import IconCircleChevronsDown from "./Icons/IconCircleChevronsDown.svelte";
   import IconCircleChevronsUp from "./Icons/IconCircleChevronsUp.svelte";
   import Pagination from "./Pagination.svelte";
@@ -10,6 +11,8 @@
   export let tableBody: Array<any>;
   export let searchableColumns: Array<boolean>;
   export let sortableColumns: Array<boolean>;
+  export let isActionColumns: Array<boolean>;
+  export let actionsHtml: Array<any>;
 
   let data = tableBody;
   let entries: number = 10;
@@ -21,33 +24,18 @@
   let sortableColumnsArray: Array<any>;
   let isSorting: boolean;
 
-  $: validateProps();
+  $: validateTablePaginationProps(
+    tableColumns,
+    searchableColumns,
+    sortableColumns,
+    isActionColumns,
+    actionsHtml
+  );
   $: initSortableColumnsArray();
   $: search(searchKeyWord.toLowerCase());
   $: calculateAllPagesLength(data, entries);
   $: calculateStartEntries(selectedPage, entries);
   $: updateFilterData(data, startEntries, entries);
-
-  function validateProps() {
-    if (searchableColumns.length != tableColumns.length) {
-      throw new Error(
-        `searchableColumns prop must have a length equal to tableColumns prop. Ex. searchableColumns = [${Array.from(
-          { length: tableColumns.length },
-          (_, i) => true
-        )}]
-         `
-      );
-    }
-    if (sortableColumns.length != tableColumns.length) {
-      throw new Error(
-        `sortableColumns prop must have a length equal to tableColumns prop. Ex. searchableColumns = [${Array.from(
-          { length: tableColumns.length },
-          (_, i) => true
-        )}]
-         `
-      );
-    }
-  }
 
   function search(_searchKeyword: string) {
     data = tableBody.filter((data) => {
@@ -107,14 +95,14 @@
 
       if (desc) {
         data = data.sort((a: any, b: any) =>
-          typeof (b[column] === "string" || a[column] === "string")
+          typeof b[column] === "string" || typeof a[column] === "string"
             ? b[column].localeCompare(a[column])
             : b[column] - a[column]
         );
       } else {
         data = data.sort((a: any, b: any) => a[column] - b[column]);
         data = data.sort((a: any, b: any) =>
-          typeof (b[column] === "string" || a[column] === "string")
+          typeof b[column] === "string" || typeof a[column] === "string"
             ? a[column].localeCompare(b[column])
             : a[column] - b[column]
         );
@@ -122,7 +110,7 @@
       updateSortColumnsIsDescending(index, desc);
     } catch (error) {
       console.log(
-        `Error sort with column '${sortableColumnsArray[index].index}'`
+        `Error sort with column '${sortableColumnsArray[index].column}' \n detail: ${error}`
       );
     } finally {
       isSorting = false;
@@ -148,28 +136,42 @@
         <tr>
           {#each tableColumns as header, index}
             <th>
-              <a
-                class="nav-link px-0"
-                type="button"
-                href={null}
-                on:click={() => sort(index)}
-              >
+              {#if sortableColumns[index] && !isActionColumns[index]}
+                <a
+                  class="nav-link px-0"
+                  type="button"
+                  href={null}
+                  on:click={() => sort(index)}
+                >
+                  {header}
+                  {#if sortableColumnsArray[index].isDescending}
+                    <IconCircleChevronsUp />
+                  {:else}
+                    <IconCircleChevronsDown />
+                  {/if}
+                </a>
+              {:else}
                 {header}
-                {#if sortableColumnsArray[index].isDescending}
-                  <IconCircleChevronsUp />
-                {:else}
-                  <IconCircleChevronsDown />
-                {/if}
-              </a>
+              {/if}
             </th>
           {/each}
         </tr>
       </thead>
       <tbody>
-        {#each filteredData as body}
+        {#each filteredData as body, bodyIndex}
           <tr>
-            {#each tableColumns as header}
-              <td>{body[header]}</td>
+            {#each tableColumns as column, columnIndex}
+              {#if isActionColumns[columnIndex]}
+                <td>
+                  {#each actionsHtml[columnIndex] as innerHtml}
+                    {@html innerHtml
+                      .replace("#id", `${bodyIndex}`)
+                      .replace("#data", `${JSON.stringify(body)}`)}
+                  {/each}
+                </td>
+              {:else}
+                <td>{body[column]}</td>
+              {/if}
             {/each}
           </tr>
         {/each}

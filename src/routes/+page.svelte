@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import TablePagination from "$lib/components/TablePagination.svelte";
 
   const irisColumns = [
@@ -7,10 +7,58 @@
     "petalLength",
     "petalWidth",
     "species",
+    "Actions",
   ];
 
-  const searchableColumns = [true, true, true, true, false];
-  const sortableColumns = [true, true, true, true, true];
+  const searchableColumns = [true, true, true, true, true, false];
+  const sortableColumns = [true, true, true, true, true, false];
+  const isActionColumns = [false, false, false, false, false, true];
+  const actionsHtml = [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      ` <button type="button" class="btn btn-icon btn-blue" id="info-#id" data-special="#data">
+      <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="icon icon-tabler icon-tabler-info-circle"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+          <path d="M12 8l.01 0" />
+          <path d="M11 12l1 0l0 4l1 0" />
+      </svg>
+      </button>`,
+      ` <button type="button" class="btn btn-icon btn-yellow" id="edit-#id" data-special="#data">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="icon icon-tabler icon-tabler-pencil"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+          <path d="M13.5 6.5l4 4" />
+      </svg>
+      </button>`,
+    ],
+  ];
   const irisData = [
     {
       sepalLength: 5.1,
@@ -1063,6 +1111,10 @@
       species: "virginica",
     },
   ];
+
+  function clickInfo(event: any) {
+    console.log("dispatcher clickInfo: ", event);
+  }
 </script>
 
 <div class="page-body">
@@ -1072,6 +1124,9 @@
       tableBody={irisData}
       {searchableColumns}
       {sortableColumns}
+      {isActionColumns}
+      {actionsHtml}
+      on:clickInfo={(event) => clickInfo(event)}
     />
   </div>
 </div>
