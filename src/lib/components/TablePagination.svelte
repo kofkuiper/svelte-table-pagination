@@ -102,14 +102,22 @@
       isSorting = true;
       const sortColumn = sortableColumnsArray[index];
       if (!sortColumn.isSortable) return;
-
       const desc = !sortColumn.isDescending;
       const column = sortColumn.column;
 
       if (desc) {
-        data = data.sort((a: any, b: any) => b[column] - a[column]);
+        data = data.sort((a: any, b: any) =>
+          typeof (b[column] === "string" || a[column] === "string")
+            ? b[column].localeCompare(a[column])
+            : b[column] - a[column]
+        );
       } else {
         data = data.sort((a: any, b: any) => a[column] - b[column]);
+        data = data.sort((a: any, b: any) =>
+          typeof (b[column] === "string" || a[column] === "string")
+            ? a[column].localeCompare(b[column])
+            : a[column] - b[column]
+        );
       }
       updateSortColumnsIsDescending(index, desc);
     } catch (error) {
