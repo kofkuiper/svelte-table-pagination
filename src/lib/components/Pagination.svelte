@@ -6,7 +6,7 @@
   import IconPrev from "./Icons/IconPrev.svelte";
 
   export let selectedPage: number;
-  export let countAllPages: number;
+  export let allPagesLength: number;
 
   let pages = [1, 2, 3, 4, 5];
 
@@ -19,9 +19,9 @@
     let shiftStartAt: number;
     if (page == 1) {
       shiftStartAt = 1;
-    } else if (page == countAllPages && countAllPages - 4 >= 1) {
-      shiftStartAt = countAllPages - 4;
-    } else if (page - 2 >= 1 && page + 2 <= countAllPages) {
+    } else if (page == allPagesLength && allPagesLength - 4 >= 1) {
+      shiftStartAt = allPagesLength - 4;
+    } else if (page - 2 >= 1 && page + 2 <= allPagesLength) {
       shiftStartAt = page - 2;
     } else {
       return;
@@ -66,14 +66,14 @@
     <li class="page-item {page == selectedPage ? 'active' : ''}">
       <a
         href={null}
-        class="page-link {page > countAllPages ? 'disabled' : ''}"
+        class="page-link {page > allPagesLength ? 'disabled' : ''}"
         type="button"
         on:click={() => viewPage(page)}>{page}</a
       >
     </li>
   {/each}
 
-  {#if pages[4] + 2 <= countAllPages}
+  {#if pages[4] + 2 <= allPagesLength}
     <li class="page-item">
       <button type="button" class="page-link" disabled>
         <IconDots />
@@ -83,9 +83,9 @@
   <li class="page-item">
     <button
       type="button"
-      class="page-link {selectedPage == countAllPages ? 'disabled' : ''}"
+      class="page-link {selectedPage == allPagesLength ? 'disabled' : ''}"
       on:click={() => viewPage(selectedPage + 1)}
-      disabled={selectedPage == countAllPages}
+      disabled={selectedPage == allPagesLength}
     >
       next
       <IconNext />
@@ -94,9 +94,9 @@
   <li class="page-item">
     <button
       type="button"
-      class="page-link {selectedPage == countAllPages ? 'disabled' : ''}"
-      on:click={() => viewPage(countAllPages)}
-      disabled={selectedPage == countAllPages}
+      class="page-link {selectedPage == allPagesLength ? 'disabled' : ''}"
+      on:click={() => viewPage(allPagesLength)}
+      disabled={selectedPage == allPagesLength}
     >
       <IconChevronsRight />
     </button>
