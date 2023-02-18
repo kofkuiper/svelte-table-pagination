@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { validateTablePaginationProps } from "$lib/services/validate.service";
+  import { validateTablePaginationProps } from "$lib/services/validations.service";
   import IconCircleChevronsDown from "./Icons/IconCircleChevronsDown.svelte";
   import IconCircleChevronsUp from "./Icons/IconCircleChevronsUp.svelte";
   import Pagination from "./Pagination.svelte";
