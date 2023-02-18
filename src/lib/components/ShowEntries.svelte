@@ -1,12 +1,15 @@
+<script lang="ts">
+    export let entries: number;
+</script>
+
 <div class="text-muted">
     Show
     <div class="mx-2 d-inline-block">
         <input
-            type="text"
+            type="number"
             class="form-control form-control-sm"
-            value="8"
-            size="3"
             aria-label="Invoices count"
+            bind:value={entries}
         />
     </div>
     entries

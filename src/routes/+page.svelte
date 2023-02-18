@@ -8,6 +8,9 @@
     "petalWidth",
     "species",
   ];
+
+  const searchableColumns = [true, true, true, true, false];
+  const sortableColumns = [true, true, true, true, true];
   const irisData = [
     {
       sepalLength: 5.1,
@@ -1062,4 +1065,13 @@
   ];
 </script>
 
-<TablePagination tableHeaders={irisColumns} tableBody={irisData} />
+<div class="page-body">
+  <div class="container-xl">
+    <TablePagination
+      tableColumns={irisColumns}
+      tableBody={irisData}
+      {searchableColumns}
+      {sortableColumns}
+    />
+  </div>
+</div>
