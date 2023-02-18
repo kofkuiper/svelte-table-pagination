@@ -1,47 +1,104 @@
+<script lang="ts">
+  import IconChevronsLeft from "./Icons/IconChevronsLeft.svelte";
+  import IconChevronsRight from "./Icons/IconChevronsRight.svelte";
+  import IconDots from "./Icons/IconDots.svelte";
+  import IconNext from "./Icons/IconNext.svelte";
+  import IconPrev from "./Icons/IconPrev.svelte";
+
+  export let selectedPage: number;
+  export let countAllPages: number;
+
+  let pages = [1, 2, 3, 4, 5];
+
+  function viewPage(page: number) {
+    selectedPage = page;
+    shiftPages(selectedPage);
+  }
+
+  function shiftPages(page: number) {
+    let shiftStartAt: number;
+    if (page == 1) {
+      shiftStartAt = 1;
+    } else if (page == countAllPages && countAllPages - 4 >= 1) {
+      shiftStartAt = countAllPages - 4;
+    } else if (page - 2 >= 1 && page + 2 <= countAllPages) {
+      shiftStartAt = page - 2;
+    } else {
+      return;
+    }
+    pages = Array.from({ length: 5 }, (_, i) => i + shiftStartAt);
+  }
+</script>
+
 <ul class="pagination m-0 ms-auto">
-  <li class="page-item disabled">
-    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="icon"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        stroke-width="2"
-        stroke="currentColor"
-        fill="none"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><polyline
-          points="15 6 9 12 15 18"
-        /></svg
-      >
-      prev
-    </a>
-  </li>
-  <li class="page-item"><a class="page-link" href="#">1</a></li>
-  <li class="page-item active"><a class="page-link" href="#">2</a></li>
-  <li class="page-item"><a class="page-link" href="#">3</a></li>
-  <li class="page-item"><a class="page-link" href="#">4</a></li>
-  <li class="page-item"><a class="page-link" href="#">5</a></li>
   <li class="page-item">
-    <a class="page-link" href="#">
-      next
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="icon"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        stroke-width="2"
-        stroke="currentColor"
-        fill="none"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><polyline
-          points="9 6 15 12 9 18"
-        /></svg
+    <button
+      type="button"
+      class="page-link {selectedPage == 1 ? 'disabled' : ''}"
+      tabindex="-1"
+      on:click={() => viewPage(1)}
+      disabled={selectedPage == 1}
+    >
+      <IconChevronsLeft />
+    </button>
+  </li>
+  <li class="page-item">
+    <button
+      type="button"
+      class="page-link {selectedPage == 1 ? 'disabled' : ''}"
+      tabindex="-1"
+      on:click={() => viewPage(selectedPage - 1)}
+      disabled={selectedPage == 1}
+    >
+      <IconPrev />
+      prev
+    </button>
+  </li>
+  {#if pages[0] - 2 > 1}
+    <li class="page-item">
+      <button type="button" class="page-link" disabled>
+        <IconDots />
+      </button>
+    </li>
+  {/if}
+
+  {#each pages as page}
+    <li class="page-item {page == selectedPage ? 'active' : ''}">
+      <a
+        href={null}
+        class="page-link {page > countAllPages ? 'disabled' : ''}"
+        type="button"
+        on:click={() => viewPage(page)}>{page}</a
       >
-    </a>
+    </li>
+  {/each}
+
+  {#if pages[4] + 2 <= countAllPages}
+    <li class="page-item">
+      <button type="button" class="page-link" disabled>
+        <IconDots />
+      </button>
+    </li>
+  {/if}
+  <li class="page-item">
+    <button
+      type="button"
+      class="page-link {selectedPage == countAllPages ? 'disabled' : ''}"
+      on:click={() => viewPage(selectedPage + 1)}
+      disabled={selectedPage == countAllPages}
+    >
+      next
+      <IconNext />
+    </button>
+  </li>
+  <li class="page-item">
+    <button
+      type="button"
+      class="page-link {selectedPage == countAllPages ? 'disabled' : ''}"
+      on:click={() => viewPage(countAllPages)}
+      disabled={selectedPage == countAllPages}
+    >
+      <IconChevronsRight />
+    </button>
   </li>
 </ul>
