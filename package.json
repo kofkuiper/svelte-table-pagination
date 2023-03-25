@@ -1,7 +1,23 @@
 {
 	"name": "svelte-table-pagination",
+	"description": "Svelte component to create and manage table and pagination.",
 	"version": "0.0.1",
-	"private": true,
+	"keywords": [
+		"table",
+		"pagination",
+		"table-pagination",
+		"sveltekit",
+		"svelte"
+	],
+	"author": {
+		"name": "kuiper",
+		"email": "kofkuiper@gmail.com",
+		"url": "https://github.com/kofkuiper"
+	},
+	"main": "index.ts",
+	"repository": {
+		"url": "https://github.com/kofkuiper/svelte-table-pagination"
+	},
 	"scripts": {
 		"dev": "vite dev --port 3000",
 		"build": "vite build",
@@ -12,6 +28,11 @@
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^1.0.0",
 		"@sveltejs/kit": "^1.0.0",
+		"mdsvex": "^0.10.6",
+		"hastscript": "^7.2.0",
+		"mdsvexamples": "^0.3.3",
+		"rehype-autolink-headings": "^6.1.1",
+		"rehype-slug": "^5.1.0",
 		"svelte": "^3.54.0",
 		"svelte-check": "^2.9.2",
 		"tslib": "^2.4.1",
@@ -20,10 +41,5 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"hastscript": "^7.2.0",
-		"mdsvex": "^0.10.6",
-		"mdsvexamples": "^0.3.3",
-		"rehype-autolink-headings": "^6.1.1",
-		"rehype-slug": "^5.1.0"
 	}
 }
