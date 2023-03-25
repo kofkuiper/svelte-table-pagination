@@ -177,9 +177,7 @@
                           body,
                         })}
                     >
-                      {@html innerHtml
-                        .replace("#index", `${bodyIndex}`)
-                        .replace("#data", `${JSON.stringify(body)}`)}
+                      {@html innerHtml}
                     </div>
                   {/each}
                 </td>

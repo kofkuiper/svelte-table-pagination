@@ -67,7 +67,7 @@ function getExActionArray(tableColumnsLength: number) {
         (_, i) => [""]
     ).concat([
         [
-            `<button type="button" class="btn" id="my-button-#id">MyButton</button>`,
+            `<button type="button" class="btn">MyButton</button>`,
         ],
     ])
 }
