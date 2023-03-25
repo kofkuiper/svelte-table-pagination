@@ -20,7 +20,7 @@
     [],
     [],
     [
-      ` <button type="button" class="btn btn-icon btn-blue" id="info-#id" data-special="#data">
+      ` <button type="button" class="btn btn-icon btn-blue">
       <svg
           xmlns="http://www.w3.org/2000/svg"
           class="icon icon-tabler icon-tabler-info-circle"
@@ -39,7 +39,7 @@
           <path d="M11 12l1 0l0 4l1 0" />
       </svg>
       </button>`,
-      ` <button type="button" class="btn btn-icon btn-yellow" id="edit-#id" data-special="#data">
+      ` <button type="button" class="btn btn-icon btn-yellow">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="icon icon-tabler icon-tabler-pencil"
@@ -1112,8 +1112,8 @@
     },
   ];
 
-  function clickInfo(event: any) {
-    console.log("dispatcher clickInfo: ", event);
+  function onClick(detail: any) {
+    console.log("on click: ", detail);
   }
 </script>
 
@@ -1126,7 +1126,7 @@
       {sortableColumns}
       {isActionColumns}
       {actionsHtml}
-      on:clickInfo={(event) => clickInfo(event)}
+      on:onClick={(e) => onClick(e.detail)}
     />
   </div>
 </div>

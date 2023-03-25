@@ -6,6 +6,7 @@
   import Search from "./Search.svelte";
   import ShowEntries from "./ShowEntries.svelte";
   import ShowEntriesDetails from "./ShowEntriesDetails.svelte";
+  import { createEventDispatcher } from "svelte";
 
   export let tableColumns: Array<string>;
   export let tableBody: Array<any>;
@@ -14,6 +15,7 @@
   export let isActionColumns: Array<boolean>;
   export let actionsHtml: Array<any>;
 
+  const dispatch = createEventDispatcher();
   let data = tableBody;
   let entries: number = 10;
   let filteredData: Array<any> = [];
@@ -163,10 +165,22 @@
             {#each tableColumns as column, columnIndex}
               {#if isActionColumns[columnIndex]}
                 <td>
-                  {#each actionsHtml[columnIndex] as innerHtml}
-                    {@html innerHtml
-                      .replace("#id", `${bodyIndex}`)
-                      .replace("#data", `${JSON.stringify(body)}`)}
+                  {#each actionsHtml[columnIndex] as innerHtml, actionIndex}
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <div
+                      id="columnIndex:{columnIndex}-bodyIndex:{bodyIndex}-actionIndex:{actionIndex}"
+                      on:click={() =>
+                        dispatch("onClick", {
+                          columnIndex,
+                          bodyIndex,
+                          actionIndex,
+                          body,
+                        })}
+                    >
+                      {@html innerHtml
+                        .replace("#index", `${bodyIndex}`)
+                        .replace("#data", `${JSON.stringify(body)}`)}
+                    </div>
                   {/each}
                 </td>
               {:else}
