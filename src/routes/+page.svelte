@@ -22,11 +22,11 @@
               You can install the svelte-table-pagination component from npm by
               running the following command:
             </p>
-            <code>npm install table-pagination</code>
+            <code>npm install svelte-table-pagination</code>
             <hr />
             <h2 id="whos-that-then">Usage</h2>
             <p>
-              Once you've installed the table-pagination component, you can
+              Once you've installed the svelte-table-pagination component, you can
               import it in your SvelteKit project like this:
             </p>
             <code>import TablePagination from 'svelte-table-pagination';</code>
