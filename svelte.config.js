@@ -48,6 +48,10 @@ const config = {
       $site: `./src/site`,
     },
   },
+  package: {
+    dir: "package",
+    emitTypes: true,
+  },
 };
 
 export default config;
