@@ -1,0 +1,1 @@
+export declare function validateTablePaginationProps(tableColumns: Array<string>, searchableColumns: Array<boolean>, sortableColumns: Array<boolean>, isActionColumns: Array<boolean>, actionsHtml: Array<any>): void;
