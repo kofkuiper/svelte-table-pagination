@@ -23,7 +23,7 @@ import TablePagination from 'svelte-table-pagination';
 ## Example
 ```
 <script lang="ts">
-  import TablePagination from "$lib/components/TablePagination.svelte";
+  import TablePagination from "svelte-table-pagination";
 
   const irisColumns = [
     "sepalLength",
