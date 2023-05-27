@@ -24,7 +24,7 @@
       <div class="nav-item d-none d-md-flex me-3">
         <div class="btn-list">
           <a
-            href="https://github.com/kofkuiper"
+            href="https://github.com/kofkuiper/svelte-table-pagination"
             class="btn"
             target="_blank"
             rel="noreferrer"
