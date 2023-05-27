@@ -1,13 +1,17 @@
 #svelte-table-pagination
 
+## Demo
+
+https://svelte-table-pagination.vercel.app/
+
 ## Installation
 You can install the svelte-table-pagination component from npm by running the following command:
-```
+```shell
 npm install svelte-table-pagination
 ```
 ## Usage
-Once you've installed the table-pagination component, you can import it in your SvelteKit project like this:
-```
+Once you've installed the table-pagination component, you can import it into your SvelteKit project like this:
+```typescript
 import TablePagination from 'svelte-table-pagination';
 ```
 
@@ -18,10 +22,10 @@ import TablePagination from 'svelte-table-pagination';
 - `sortableColumns`: An array of boolean values indicating whether each column should be sortable.
 - `isActionColumns`: An array of boolean values indicating whether each column should display an action button.
 - `actionsHtml`: An array of HTML elements to display as the action buttons for each row. This prop is only used if `isActionColumns` is true for any column. Defaults to an empty array.
-- `on:onClick`: (Optional)An function to handle click on action button. 
+- `on:onClick`: (Optional)An function to handle the click-on action button. 
 
 ## Example
-```
+```typescript
 <script lang="ts">
   import TablePagination from "svelte-table-pagination";
 

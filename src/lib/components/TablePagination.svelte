@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { validateTablePaginationProps } from "$lib/services/validations.service";
+  import { validateTablePaginationProps } from "$lib/services/validations.service.js";
   import IconCircleChevronsDown from "./Icons/IconCircleChevronsDown.svelte";
   import IconCircleChevronsUp from "./Icons/IconCircleChevronsUp.svelte";
   import Pagination from "./Pagination.svelte";
@@ -124,6 +124,17 @@
     sortableColumnsArray[index].isDescending = isDescending;
   }
 </script>
+
+<svelte:head>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta16/dist/js/tabler.min.js"
+  >
+  </script>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta16/dist/css/tabler.min.css"
+  />
+</svelte:head>
 
 <div class="card">
   <div class="card-body border-bottom py-3">

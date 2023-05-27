@@ -108,6 +108,17 @@ function updateSortColumnsIsDescending(index, isDescending) {
 }
 </script>
 
+<svelte:head>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta16/dist/js/tabler.min.js"
+  >
+  </script>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta16/dist/css/tabler.min.css"
+  />
+</svelte:head>
+
 <div class="card">
   <div class="card-body border-bottom py-3">
     <div class="d-flex">
