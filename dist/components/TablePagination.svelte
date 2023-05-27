@@ -1,4 +1,4 @@
-<script>import { validateTablePaginationProps } from "../services/validations.service";
+<script>import { validateTablePaginationProps } from "../services/validations.service.js";
 import IconCircleChevronsDown from "./Icons/IconCircleChevronsDown.svelte";
 import IconCircleChevronsUp from "./Icons/IconCircleChevronsUp.svelte";
 import Pagination from "./Pagination.svelte";
