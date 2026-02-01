@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let searchKeyWord: string;
+  let { searchKeyWord = $bindable() }: { searchKeyWord: string } = $props();
 </script>
 
 <div class="ms-auto text-muted">

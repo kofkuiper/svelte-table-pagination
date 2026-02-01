@@ -1,10 +1,6 @@
 import { SvelteComponentTyped } from "svelte";
 declare const __propDef: {
-    props: {
-        allDataLength: number;
-        filteredDataLength: number;
-        startEntries: number;
-    };
+    props: Record<string, never>;
     events: {
         [evt: string]: CustomEvent<any>;
     };

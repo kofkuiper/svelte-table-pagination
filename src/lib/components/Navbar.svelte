@@ -15,7 +15,7 @@
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
-      <span class="navbar-toggler-icon" />
+      <span class="navbar-toggler-icon"></span>
     </button>
     <h1 class="mt-3">
       <NavbarLogo />

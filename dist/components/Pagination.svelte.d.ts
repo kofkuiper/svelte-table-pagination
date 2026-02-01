@@ -1,9 +1,6 @@
 import { SvelteComponentTyped } from "svelte";
 declare const __propDef: {
-    props: {
-        selectedPage: number;
-        allPagesLength: number;
-    };
+    props: Record<string, never>;
     events: {
         [evt: string]: CustomEvent<any>;
     };

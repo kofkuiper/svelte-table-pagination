@@ -8,120 +8,113 @@
   import ShowEntriesDetails from "./ShowEntriesDetails.svelte";
   import { createEventDispatcher } from "svelte";
 
-  export let tableColumns: Array<string>;
-  export let tableBody: Array<any>;
-  export let searchableColumns: Array<boolean>;
-  export let sortableColumns: Array<boolean>;
-  export let isActionColumns: Array<boolean>;
-  export let actionsHtml: Array<any>;
+  interface Props {
+    tableColumns: Array<string>;
+    tableBody: Array<any>;
+    searchableColumns: Array<boolean>;
+    sortableColumns: Array<boolean>;
+    isActionColumns: Array<boolean>;
+    actionsHtml: Array<any>;
+  }
 
-  const dispatch = createEventDispatcher();
-  let data = tableBody;
-  let entries: number = 10;
-  let filteredData: Array<any> = [];
-  let searchKeyWord: string = "";
-  let selectedPage: number = 1;
-  let allPagesLength: number = 0;
-  let startEntries: number = 0;
-  let sortableColumnsArray: Array<any>;
-  let isSorting: boolean;
-
-  $: validateTablePaginationProps(
+  let {
     tableColumns,
+    tableBody,
     searchableColumns,
     sortableColumns,
     isActionColumns,
-    actionsHtml
-  );
-  $: initSortableColumnsArray();
-  $: search(searchKeyWord.toLowerCase());
-  $: calculateAllPagesLength(data, entries);
-  $: calculateStartEntries(selectedPage, entries);
-  $: updateFilterData(data, startEntries, entries);
+    actionsHtml,
+  }: Props = $props();
 
-  function search(_searchKeyword: string) {
-    data = tableBody.filter((data) => {
+  const dispatch = createEventDispatcher();
+
+  let entries = $state(10);
+  let searchKeyWord = $state("");
+  let selectedPage = $state(1);
+  
+  // State for sorting
+  let currentSortIndex = $state(-1);
+  let isDescending = $state(false);
+
+  // Validation Effect
+  $effect(() => {
+    validateTablePaginationProps(
+      tableColumns,
+      searchableColumns,
+      sortableColumns,
+      isActionColumns,
+      actionsHtml
+    );
+  });
+
+  // Derived: Search
+  let searchedData = $derived.by(() => {
+    const keyword = searchKeyWord.toLowerCase();
+    if (!keyword) return tableBody;
+
+    return tableBody.filter((row) => {
       for (let i = 0; i < tableColumns.length; i++) {
         const column = tableColumns[i];
-        if (
-          isSearchableColumns(column) &&
-          data[column].toString().toLowerCase().indexOf(_searchKeyword) !== -1
-        ) {
+        if (searchableColumns[i] && row[column]?.toString().toLowerCase().includes(keyword)) {
           return true;
         }
       }
+      return false;
     });
-  }
+  });
 
-  function isSearchableColumns(_column: string) {
-    return searchableColumns[
-      tableColumns.findIndex((header) => header === _column)
-    ];
-  }
-
-  function calculateAllPagesLength(_data: Array<any>, _entries: number) {
-    allPagesLength = Math.ceil(_data.length / _entries);
-  }
-
-  function calculateStartEntries(_selectedPage: number, _entries: number) {
-    let index = _selectedPage - 1;
-    startEntries = index == 0 ? 0 : index-- * _entries;
-  }
-
-  function updateFilterData(
-    _data: Array<any>,
-    _startEntries: number,
-    _entries: number
-  ) {
-    filteredData = _data.slice(startEntries, startEntries + _entries);
-  }
-
-  function initSortableColumnsArray() {
-    sortableColumnsArray = tableColumns.map((column, index) => {
-      return {
-        column,
-        isSortable: sortableColumns[index],
-        isDescending: false,
-      };
-    });
-  }
-
-  function sort(index: number) {
-    if (isSorting) return;
-    try {
-      isSorting = true;
-      const sortColumn = sortableColumnsArray[index];
-      if (!sortColumn.isSortable) return;
-      const desc = !sortColumn.isDescending;
-      const column = sortColumn.column;
-
-      if (desc) {
-        data = data.sort((a: any, b: any) =>
-          typeof b[column] === "string" || typeof a[column] === "string"
-            ? b[column].localeCompare(a[column])
-            : b[column] - a[column]
-        );
-      } else {
-        data = data.sort((a: any, b: any) => a[column] - b[column]);
-        data = data.sort((a: any, b: any) =>
-          typeof b[column] === "string" || typeof a[column] === "string"
-            ? a[column].localeCompare(b[column])
-            : a[column] - b[column]
-        );
-      }
-      updateSortColumnsIsDescending(index, desc);
-    } catch (error) {
-      console.log(
-        `Error sort with column '${sortableColumnsArray[index].column}' \n detail: ${error}`
-      );
-    } finally {
-      isSorting = false;
+  // Derived: Sort
+  let sortedData = $derived.by(() => {
+    if (currentSortIndex === -1 || !sortableColumns[currentSortIndex]) {
+      return searchedData;
     }
-  }
 
-  function updateSortColumnsIsDescending(index: number, isDescending: boolean) {
-    sortableColumnsArray.forEach((value) => (value.isDescending = false));
-    sortableColumnsArray[index].isDescending = isDescending;
+    const column = tableColumns[currentSortIndex];
+    // Create a shallow copy to sort
+    const dataToSort = [...searchedData];
+
+    return dataToSort.sort((a, b) => {
+      const valA = a[column];
+      const valB = b[column];
+      const aString = typeof valA === "string";
+      const bString = typeof valB === "string";
+
+      let comparison = 0;
+      if (aString || bString) {
+        comparison = String(valA).localeCompare(String(valB));
+      } else {
+        comparison = valA - valB;
+      }
+
+      return isDescending ? -comparison : comparison;
+    });
+  });
+
+  // Derived: Pagination
+  let allPagesLength = $derived(Math.ceil(sortedData.length / entries));
+  
+  // Reset selected page if it exceeds max pages
+  $effect(() => {
+      if (selectedPage > allPagesLength && allPagesLength > 0) {
+          selectedPage = allPagesLength;
+      } else if (selectedPage < 1) {
+          selectedPage = 1;
+      }
+  });
+
+  let startEntries = $derived((selectedPage - 1) * entries);
+  let filteredData = $derived(sortedData.slice(startEntries, startEntries + entries));
+
+  // Sort Handler
+  function sort(index: number) {
+    if (!sortableColumns[index]) return;
+
+    if (currentSortIndex === index) {
+      isDescending = !isDescending;
+    } else {
+      currentSortIndex = index;
+      isDescending = false;
+    }
   }
 </script>
 
@@ -154,13 +147,17 @@
                   class="nav-link px-0"
                   type="button"
                   href={null}
-                  on:click={() => sort(index)}
+                  onclick={() => sort(index)}
                 >
                   {header}
-                  {#if sortableColumnsArray[index].isDescending}
-                    <IconCircleChevronsUp />
+                  {#if currentSortIndex === index}
+                    {#if isDescending}
+                      <IconCircleChevronsDown />
+                    {:else}
+                      <IconCircleChevronsUp />
+                    {/if}
                   {:else}
-                    <IconCircleChevronsDown />
+                     <IconCircleChevronsDown />
                   {/if}
                 </a>
               {:else}
@@ -177,10 +174,11 @@
               {#if isActionColumns[columnIndex]}
                 <td>
                   {#each actionsHtml[columnIndex] as innerHtml, actionIndex}
-                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <!-- svelte-ignore a11y_click_events_have_key_events -->
+                    <!-- svelte-ignore a11y_no_static_element_interactions -->
                     <div
                       id="columnIndex:{columnIndex}-bodyIndex:{bodyIndex}-actionIndex:{actionIndex}"
-                      on:click={() =>
+                      onclick={() =>
                         dispatch("onClick", {
                           columnIndex,
                           bodyIndex,
@@ -203,7 +201,7 @@
   </div>
   <div class="card-footer d-flex align-items-center">
     <ShowEntriesDetails
-      allDataLength={data.length}
+      allDataLength={sortedData.length}
       filteredDataLength={filteredData.length}
       {startEntries}
     />

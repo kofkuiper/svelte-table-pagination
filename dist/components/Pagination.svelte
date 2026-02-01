@@ -1,28 +1,29 @@
-<script>import IconChevronsLeft from "./Icons/IconChevronsLeft.svelte";
-import IconChevronsRight from "./Icons/IconChevronsRight.svelte";
-import IconDots from "./Icons/IconDots.svelte";
-import IconNext from "./Icons/IconNext.svelte";
-import IconPrev from "./Icons/IconPrev.svelte";
-export let selectedPage;
-export let allPagesLength;
-let pages = [1, 2, 3, 4, 5];
-function viewPage(page) {
-  selectedPage = page;
-  shiftPages(selectedPage);
-}
-function shiftPages(page) {
-  let shiftStartAt;
-  if (page == 1) {
-    shiftStartAt = 1;
-  } else if (page == allPagesLength && allPagesLength - 4 >= 1) {
-    shiftStartAt = allPagesLength - 4;
-  } else if (page - 2 >= 1 && page + 2 <= allPagesLength) {
-    shiftStartAt = page - 2;
-  } else {
-    return;
+<script lang="ts">
+  import IconChevronsLeft from "./Icons/IconChevronsLeft.svelte";
+  import IconChevronsRight from "./Icons/IconChevronsRight.svelte";
+  import IconDots from "./Icons/IconDots.svelte";
+  import IconNext from "./Icons/IconNext.svelte";
+  import IconPrev from "./Icons/IconPrev.svelte";
+
+  interface Props {
+    selectedPage: number;
+    allPagesLength: number;
   }
-  pages = Array.from({ length: 5 }, (_, i) => i + shiftStartAt);
-}
+  let { selectedPage = $bindable(), allPagesLength }: Props = $props();
+
+  let pages = $derived.by(() => {
+    if (allPagesLength <= 5) {
+      return Array.from({ length: allPagesLength }, (_, i) => i + 1);
+    }
+    let start = selectedPage - 2;
+    if (start < 1) start = 1;
+    if (start + 4 > allPagesLength) start = allPagesLength - 4;
+    return Array.from({ length: 5 }, (_, i) => start + i);
+  });
+
+  function viewPage(page: number) {
+    selectedPage = page;
+  }
 </script>
 
 <ul class="pagination m-0 ms-auto">
@@ -31,7 +32,7 @@ function shiftPages(page) {
       type="button"
       class="page-link {selectedPage == 1 ? 'disabled' : ''}"
       tabindex="-1"
-      on:click={() => viewPage(1)}
+      onclick={() => viewPage(1)}
       disabled={selectedPage == 1}
     >
       <IconChevronsLeft />
@@ -42,14 +43,14 @@ function shiftPages(page) {
       type="button"
       class="page-link {selectedPage == 1 ? 'disabled' : ''}"
       tabindex="-1"
-      on:click={() => viewPage(selectedPage - 1)}
+      onclick={() => viewPage(selectedPage - 1)}
       disabled={selectedPage == 1}
     >
       <IconPrev />
       prev
     </button>
   </li>
-  {#if pages[0] - 2 > 1}
+  {#if pages[0] > 1}
     <li class="page-item">
       <button type="button" class="page-link" disabled>
         <IconDots />
@@ -63,12 +64,12 @@ function shiftPages(page) {
         href={null}
         class="page-link {page > allPagesLength ? 'disabled' : ''}"
         type="button"
-        on:click={() => viewPage(page)}>{page}</a
+        onclick={() => viewPage(page)}>{page}</a
       >
     </li>
   {/each}
 
-  {#if pages[4] + 2 <= allPagesLength}
+  {#if pages[pages.length - 1] < allPagesLength}
     <li class="page-item">
       <button type="button" class="page-link" disabled>
         <IconDots />
@@ -79,7 +80,7 @@ function shiftPages(page) {
     <button
       type="button"
       class="page-link {selectedPage == allPagesLength ? 'disabled' : ''}"
-      on:click={() => viewPage(selectedPage + 1)}
+      onclick={() => viewPage(selectedPage + 1)}
       disabled={selectedPage == allPagesLength}
     >
       next
@@ -90,7 +91,7 @@ function shiftPages(page) {
     <button
       type="button"
       class="page-link {selectedPage == allPagesLength ? 'disabled' : ''}"
-      on:click={() => viewPage(allPagesLength)}
+      onclick={() => viewPage(allPagesLength)}
       disabled={selectedPage == allPagesLength}
     >
       <IconChevronsRight />

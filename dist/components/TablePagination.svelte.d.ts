@@ -1,13 +1,6 @@
 import { SvelteComponentTyped } from "svelte";
 declare const __propDef: {
-    props: {
-        tableColumns: Array<string>;
-        tableBody: Array<any>;
-        searchableColumns: Array<boolean>;
-        sortableColumns: Array<boolean>;
-        isActionColumns: Array<boolean>;
-        actionsHtml: Array<any>;
-    };
+    props: Record<string, never>;
     events: {
         onClick: CustomEvent<any>;
     } & {

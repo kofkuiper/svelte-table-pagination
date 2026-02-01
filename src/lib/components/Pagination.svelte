@@ -5,28 +5,24 @@
   import IconNext from "./Icons/IconNext.svelte";
   import IconPrev from "./Icons/IconPrev.svelte";
 
-  export let selectedPage: number;
-  export let allPagesLength: number;
+  interface Props {
+    selectedPage: number;
+    allPagesLength: number;
+  }
+  let { selectedPage = $bindable(), allPagesLength }: Props = $props();
 
-  let pages = [1, 2, 3, 4, 5];
+  let pages = $derived.by(() => {
+    if (allPagesLength <= 5) {
+      return Array.from({ length: allPagesLength }, (_, i) => i + 1);
+    }
+    let start = selectedPage - 2;
+    if (start < 1) start = 1;
+    if (start + 4 > allPagesLength) start = allPagesLength - 4;
+    return Array.from({ length: 5 }, (_, i) => start + i);
+  });
 
   function viewPage(page: number) {
     selectedPage = page;
-    shiftPages(selectedPage);
-  }
-
-  function shiftPages(page: number) {
-    let shiftStartAt: number;
-    if (page == 1) {
-      shiftStartAt = 1;
-    } else if (page == allPagesLength && allPagesLength - 4 >= 1) {
-      shiftStartAt = allPagesLength - 4;
-    } else if (page - 2 >= 1 && page + 2 <= allPagesLength) {
-      shiftStartAt = page - 2;
-    } else {
-      return;
-    }
-    pages = Array.from({ length: 5 }, (_, i) => i + shiftStartAt);
   }
 </script>
 
@@ -36,7 +32,7 @@
       type="button"
       class="page-link {selectedPage == 1 ? 'disabled' : ''}"
       tabindex="-1"
-      on:click={() => viewPage(1)}
+      onclick={() => viewPage(1)}
       disabled={selectedPage == 1}
     >
       <IconChevronsLeft />
@@ -47,14 +43,14 @@
       type="button"
       class="page-link {selectedPage == 1 ? 'disabled' : ''}"
       tabindex="-1"
-      on:click={() => viewPage(selectedPage - 1)}
+      onclick={() => viewPage(selectedPage - 1)}
       disabled={selectedPage == 1}
     >
       <IconPrev />
       prev
     </button>
   </li>
-  {#if pages[0] - 2 > 1}
+  {#if pages[0] > 1}
     <li class="page-item">
       <button type="button" class="page-link" disabled>
         <IconDots />
@@ -68,12 +64,12 @@
         href={null}
         class="page-link {page > allPagesLength ? 'disabled' : ''}"
         type="button"
-        on:click={() => viewPage(page)}>{page}</a
+        onclick={() => viewPage(page)}>{page}</a
       >
     </li>
   {/each}
 
-  {#if pages[4] + 2 <= allPagesLength}
+  {#if pages[pages.length - 1] < allPagesLength}
     <li class="page-item">
       <button type="button" class="page-link" disabled>
         <IconDots />
@@ -84,7 +80,7 @@
     <button
       type="button"
       class="page-link {selectedPage == allPagesLength ? 'disabled' : ''}"
-      on:click={() => viewPage(selectedPage + 1)}
+      onclick={() => viewPage(selectedPage + 1)}
       disabled={selectedPage == allPagesLength}
     >
       next
@@ -95,7 +91,7 @@
     <button
       type="button"
       class="page-link {selectedPage == allPagesLength ? 'disabled' : ''}"
-      on:click={() => viewPage(allPagesLength)}
+      onclick={() => viewPage(allPagesLength)}
       disabled={selectedPage == allPagesLength}
     >
       <IconChevronsRight />
